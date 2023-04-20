@@ -103,6 +103,9 @@ def main(argv):
                 else:
                     map_weights.append(float(50))
         amount = random.randint(config.range[0], config.range[1])
+        
+        if not duplicates:
+            amount = min(len(map_options), amount)
 
         for i in range(0, amount, 1):
             while True:
