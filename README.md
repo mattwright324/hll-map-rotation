@@ -15,7 +15,7 @@ $ ./new_rotation.py -c "13w" -t 1 -r 1
 $ ./new_rotation.py -s -c "1w 1o 1w 1o 1w 1o"
 
 # rotation for the new update using only the new maps
-$ ./new_rotation.py -c "8a" -f "update14_maps.csv"
+$ ./new_rotation.py -c "8a" -i "update14_maps.csv"
 
 # night maps only. most are stress so set stress distance to 0
 $ ./new_rotation.py -r 0 -c "5wn"
@@ -37,7 +37,7 @@ $ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 3ou"
 - `-r <int>` or `--stress-dist <int>` default `1`. distance between stressful maps
 	- Example: space between *remagen_warfare* and *hill400_warfare* to fill with non stressful maps
 - `-t <int>` or `--nonstress-dist <int>` default `0`. distance between non-stress maps
-	- Example: space between *stmariedumont_warfare* and *stmereeglise_warfare* to fill with non stressful maps
+	- Example: space between *stmariedumont_warfare* and *stmereeglise_warfare* to fill with stressful maps
 - `-s` or `--seed` default off. generate an ideal seeding rotation based off the generated rotation to prevent or distance duplicate maps when going from seed to live
 - `-c "<config>"` or  `--config "<config>"` default `7w 2o`. advanced specify generated config by number/range/type
     - `#` static amount
