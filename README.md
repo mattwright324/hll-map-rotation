@@ -18,7 +18,7 @@ $ ./new_rotation.py -c "8a" -f "update14_maps.csv"
 $ ./new_rotation.py -r 0 -c "5wn"
 
 # offensive only alternating attack and defense for teams. increase stress map distance to 2
-$ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 2ou"
+$ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 3ou"
 ```
 
 ### Options
@@ -34,7 +34,6 @@ $ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 2ou"
 - `-r <int>` or `--stress-dist <int>` default `1`. distance between stressful maps
 	- Example: space between *remagen_warfare* and *hill400_warfare* to fill with non stressful maps
 - `-s` or `--seed` default off. generate an ideal seeding rotation based off the generated rotation to prevent or distance duplicate maps when going from seed to live
-- `-c` or `--config` 
 - `-c "<config>"` or  `--config "<config>"` default `7w 2o`. advanced specify generated config by number/range/type
     - `#` static amount
 	- `#-#` range amount
