@@ -70,11 +70,12 @@ def main(argv):
     general_dupe_dist = -1
     make_seed_rotation = False
     input_file = "hll_rcon_maps.csv"
-    stress_dist = 2
+    stress_dist = 1
+    nonstress_dist = 0
     weighted = True
 
-    opts, args = getopt.getopt(argv, "hdne:g:si:r:c:", [
-        "help", "debug", "no-weight", "exact-dupe-dist", "general-dupe-dist", "seed", "input", "stress-dist", "config"
+    opts, args = getopt.getopt(argv, "hdne:g:si:r:t:c:", [
+        "help", "debug", "no-weight", "exact-dupe-dist", "general-dupe-dist", "seed", "input", "stress-dist", "nonstress-dist", "config"
     ])
     for opt, arg in opts:
         if opt in ("-h", "--help"):
@@ -95,6 +96,9 @@ def main(argv):
         elif opt in ("-r", "--stress-dist"):
             if arg != None and arg.isnumeric():
                 stress_dist = int(arg)
+        elif opt in ("-t", "--nonstress-dist"):
+            if arg != None and arg.isnumeric():
+                nonstress_dist = int(arg)
         elif opt in ("-s", "--seed"):
             make_seed_rotation = True
         elif opt in ("-c", "--config"):
@@ -107,6 +111,7 @@ def main(argv):
               "  exact_dupe_dist=", exact_dupe_dist,
               "  general_dupe_dist=", general_dupe_dist,
               "  stress_dist=", stress_dist,
+              "  nonstress_dist=", nonstress_dist,
               "  input_file=\"", input_file, '"',
               "  make_seed_rotation=", make_seed_rotation,
               "  weighted=", weighted, sep='')
@@ -134,21 +139,25 @@ def main(argv):
         print()
 
     def generate_seed_rotation(live_rotation):
+        seed_temp = []
+        for map in seed_maps:
+            seed_temp.append(map)
+        
         seed_rotation = []
-        for i in range(0, min(len(seed_maps), len(live_rotation)), 1):
+        for i in range(0, min(len(seed_temp), len(live_rotation)), 1):
             seed_rotation.append("")
 
         # Match index
-        for i in range(0, len(seed_maps), 1):
+        for i in range(0, len(seed_temp), 1):
             if i > len(live_rotation):
                 break
-            if live_rotation[i] in seed_maps:
+            if live_rotation[i] in seed_temp:
                 seed_rotation[i] = live_rotation[i]
-                seed_maps.remove(seed_rotation[i])
+                seed_temp.remove(seed_rotation[i])
 
         # Fill in blanks by distance for dupes outside seed rotation length
         dist_tuples = []
-        for map in seed_maps:
+        for map in seed_temp:
             if map in live_rotation:
                 full_ind = live_rotation.index(map)
                 dist_tuples.append((full_ind, map))
@@ -156,13 +165,13 @@ def main(argv):
         for tuple in dist_tuples:
             # print(tuple, " dist ", tuple[0] - seed_rotation.index(""))
             seed_rotation[seed_rotation.index("")] = tuple[1]
-            seed_maps.remove(tuple[1])
+            seed_temp.remove(tuple[1])
 
         # Fill in remaining blanks if they exist
         for i in range(0, len(seed_rotation), 1):
-            if seed_rotation[i] == "" and len(seed_maps) > 0:
-                seed_rotation[i] = seed_maps[0]
-                seed_maps.remove(seed_maps[0])
+            if seed_rotation[i] == "" and len(seed_temp) > 0:
+                seed_rotation[i] = seed_temp[0]
+                seed_temp.remove(seed_temp[0])
         
         return seed_rotation
 
@@ -196,6 +205,15 @@ def main(argv):
                 if (l < 0): l = 0
                 for j in range(l, length, 1):
                     if live_rotation[j] in stress_maps:
+                        good_result = False
+
+            if nonstress_dist == -1 and result not in stress_maps:
+                good_result = False
+            if nonstress_dist > -1 and result not in stress_maps and length > 0:
+                l = length-nonstress_dist
+                if (l < 0): l = 0
+                for j in range(l, length, 1):
+                    if live_rotation[j] not in stress_maps:
                         good_result = False
             
             return good_result
