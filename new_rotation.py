@@ -240,7 +240,16 @@ def main(argv):
                 amount = min(len(map_options), amount)
             
             if debug:
-                print("Config: ", config.str)
+                print("Config [",
+                      "str=", config.str,
+                      " range=", config.range,
+                      " w=", config.warfare,
+                      " d=", config.day,
+                      " n=", config.night,
+                      " o=", config.offensive,
+                      " g=", config.axis,
+                      " u=", config.allies,
+                      "]", sep='')
                 print("Map options: ", map_options)
                 print("Map weights: ", map_weights)
                 print()
@@ -259,7 +268,7 @@ def main(argv):
                         live_rotation.append(result)
                         break
                     if not any_good_results:
-                        print("No more good results possible, stopping early.")
+                        if debug: print("No more good results possible, stopping early.")
                         break
 
         return live_rotation

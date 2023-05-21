@@ -14,8 +14,8 @@ $ ./new_rotation.py -c "13w" -t 1 -r 1
 # alternate warfare and offensive with default settings with seed rotation
 $ ./new_rotation.py -s -c "1w 1o 1w 1o 1w 1o"
 
-# rotation for the new update using only the new maps
-$ ./new_rotation.py -c "8a" -i "update14_maps.csv"
+# rotation for the new update using only the new maps (speculative). tweak dupe and stress options
+$ ./new_rotation.py -c "8a" -i "update14_maps.csv" -e 2 -g 1 -r 0
 
 # night maps only. most are stress so set stress distance to 0
 $ ./new_rotation.py -r 0 -c "5wn"
