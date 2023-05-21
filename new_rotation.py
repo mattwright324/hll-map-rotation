@@ -6,6 +6,7 @@ import re
 
 class Config:
     def __init__(self):
+        self.str = ""
         self.range = [0, 0]
         self.warfare = False
         self.day = False
@@ -16,6 +17,7 @@ class Config:
 
 def readConfig(configStr):
     config = Config()
+    config.str = configStr
 
     result = re.search(r"((\d+)-?(\d+)?)([awdnogu]+)", configStr)
 
@@ -53,12 +55,11 @@ def readConfig(configStr):
 # rotation - maps list
 # stress_maps - optional to highlight stress maps in output
 def print_json_copy_paste(type, rotation, stress_maps):
-    print(" ##### ", type, " ##### ")
+    print(" ##### ", type, " (", len(rotation)," maps) ##### ", sep='')
     print()
     print('"rotation": [')
     print("  \"","\",\n  \"".join(rotation),"\"", sep='')
     print("]")
-    print()
     print()
 
 def main(argv):
@@ -109,12 +110,14 @@ def main(argv):
               "  input_file=\"", input_file, '"',
               "  make_seed_rotation=", make_seed_rotation,
               "  weighted=", weighted, sep='')
+        print()
 
     configs = []
     for config_str in config_input.split(" "):
         configs.append(readConfig(config_str))
     csv_data = []
     stress_maps = []
+    seed_maps = []
     with open(input_file, "r") as file:
         reader = csv.reader(file)
         headers = next(reader)
@@ -122,13 +125,15 @@ def main(argv):
     for row in csv_data:
         if str(row["stress"]).upper() == "TRUE":
             stress_maps.append(row["map"])
+        if str(row["seeding"]).upper() == "TRUE":
+            seed_maps.append(row["map"])
+    
+    if debug:
+        print("Seed maps: ", seed_maps)
+        print("Stress maps: ", stress_maps)
+        print()
 
-    def generate_seed_rotation(csv_data, live_rotation):
-        seed_maps = []
-        for row in csv_data:
-            if str(row["seeding"]).upper() == "TRUE":
-                seed_maps.append(row["map"])
-        
+    def generate_seed_rotation(live_rotation):
         seed_rotation = []
         for i in range(0, min(len(seed_maps), len(live_rotation)), 1):
             seed_rotation.append("")
@@ -172,6 +177,7 @@ def main(argv):
                 good_result = False
             if exact_dupe_dist > -1 and result in live_rotation and live_rotation.index(result)-length < exact_dupe_dist:
                 good_result = False
+            
             if general_dupe_dist == -1:
                 for j in range(0, length, 1):
                     if result.split("_")[0] == live_rotation[j].split("_")[0]:
@@ -182,6 +188,7 @@ def main(argv):
                 for j in range(l, length, 1):
                     if result.split("_")[0] == live_rotation[j].split("_")[0]:
                         good_result = False
+            
             if stress_dist == -1 and result in stress_maps:
                 good_result = False
             if stress_dist > -1 and result in stress_maps and length > 0:
@@ -215,8 +222,10 @@ def main(argv):
                 amount = min(len(map_options), amount)
             
             if debug:
-                print(map_options)
-                print(map_weights)
+                print("Config: ", config.str)
+                print("Map options: ", map_options)
+                print("Map weights: ", map_weights)
+                print()
             
             for i in range(0, amount, 1):
                 while True:
@@ -232,7 +241,7 @@ def main(argv):
                         live_rotation.append(result)
                         break
                     if not any_good_results:
-                        # print("No more good results possible, stopping early.")
+                        print("No more good results possible, stopping early.")
                         break
 
         return live_rotation
@@ -242,7 +251,7 @@ def main(argv):
     print_json_copy_paste("Live", live_rotation, stress_maps=[])
     
     if make_seed_rotation:
-        seed_rotation = generate_seed_rotation(csv_data, live_rotation)
+        seed_rotation = generate_seed_rotation(live_rotation)
         print_json_copy_paste("Seed", seed_rotation, stress_maps=[])
 
 
