@@ -1,5 +1,5 @@
 map,mode,variant,weight,seeding,stress
-carentan_warfare,warfare,day,90,TRUE,
+carentan_warfare,warfare,day,900,TRUE,
 foy_warfare,warfare,day,50,,
 foy_warfare_night,warfare,night,50,,
 hill400_warfare,warfare,day,10,,TRUE

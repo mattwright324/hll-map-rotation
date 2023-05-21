@@ -5,23 +5,37 @@ Generate random weighted map rotations for the hll_rcon_tool
 ## Usage
 
 ```sh
-$ ./new_rotation.py -cs "5w 1o 5w 1o"
-$ ./new_rotation.py -cs "7-8wd 1wn 2og"
-$ ./new_rotation.py -cs "11w"
-$ ./new_rotation.py -ncs "8a"
+# 9 warfares in a row with default settings with seed rotation
+$ ./new_rotation.py -s -c "9w"
+
+# alternate warfare and offensive with default settings with seed rotation
+$ ./new_rotation.py -s -c "1w 1o 1w 1o 1w 1o"
+
+# rotation for the new update using only the new maps
+$ ./new_rotation.py -c "8a" -f "update14_maps.csv"
+
+# night maps only. most are stress so set stress distance to 0
+$ ./new_rotation.py -r 0 -c "5wn"
+
+# offensive only alternating attack and defense for teams. increase stress map distance to 2
+$ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 2ou"
 ```
 
 ### Options
 
-- `-n` or  `--no-weight` generate the list with no weight.
-- `-d` or `--allow-dupes` allow exact duplicates in the list. disabled by default
+- `-d` or `--debug` default off. print extra messages to debug
+- `-i "<file>"` or `--input "<file>"` default `hll_rcon_maps.csv`. specify the csv file to pick maps from 
+- `-n` or `--no-weight` default off. generate the list with no weighting
+- `-e <int>` or `--exact-dupe-dist <int>` default `-1` (disabled). allow/distance of exact duplicates
     - Example: two *carentan_warfare* in the list
-- `-g` or `--disable-general-dupes` allow general duplicates in the list. enabled by default
-    - Example: two *carentan* of any type in the list
-- `-x` or `--allow-consecutive` allow consecutive of the same general map. disabled by default
-    - Example: *foy_warfare* followed by *foy_warfare_night*
-	- Dependent on allowed duplicate options
-- `-c "<config>"` or  `--config "<config>"` advanced specify generated config by number/range/type
+	- Requires at least a `general-dupe-dist` of 0 to work
+- `-g <int>` or `--general-dupe-dist <int>` default `-1` (disabled). allow/distance of the same general map
+	- Example: two *carentan* of any type in the list
+- `-r <int>` or `--stress-dist <int>` default `1`. distance between stressful maps
+	- Example: space between *remagen_warfare* and *hill400_warfare* to fill with non stressful maps
+- `-s` or `--seed` default off. generate an ideal seeding rotation based off the generated rotation to prevent or distance duplicate maps when going from seed to live
+- `-c` or `--config` 
+- `-c "<config>"` or  `--config "<config>"` default `7w 2o` advanced specify generated config by number/range/type. default is `7w 1o`
     - `#` static amount
 	- `#-#` range amount
 	- `a` all modes/variants
@@ -31,5 +45,3 @@ $ ./new_rotation.py -ncs "8a"
 	- `o` offensive mode. includes both variants by default
 	    - `g` axis attacking variant
 		- `u` allies attacking variant
-- `-s` or `--seed` generate ideal seeding rotation based on the generated rotation
-    - Tries to make sure duplicates/consecutives do not happen or are far enough apart when changing from seeding to live rotations.
