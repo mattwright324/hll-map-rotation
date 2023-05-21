@@ -35,7 +35,7 @@ $ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 2ou"
 	- Example: space between *remagen_warfare* and *hill400_warfare* to fill with non stressful maps
 - `-s` or `--seed` default off. generate an ideal seeding rotation based off the generated rotation to prevent or distance duplicate maps when going from seed to live
 - `-c` or `--config` 
-- `-c "<config>"` or  `--config "<config>"` default `7w 2o` advanced specify generated config by number/range/type. default is `7w 1o`
+- `-c "<config>"` or  `--config "<config>"` default `7w 2o`. advanced specify generated config by number/range/type
     - `#` static amount
 	- `#-#` range amount
 	- `a` all modes/variants
