@@ -1,7 +1,7 @@
 map,mode,variant,weight,seeding,stress
 carentan_warfare,warfare,day,90,TRUE,
-driel_warfare,warfare,day,0,TRUE,
-elalamein_warfare,warfare,day,0,TRUE,
+driel_warfare,warfare,day,0,,
+elalamein_warfare,warfare,day,0,,
 foy_warfare,warfare,day,50,,
 foy_warfare_night,warfare,night,50,,
 hill400_warfare,warfare,day,10,,TRUE
