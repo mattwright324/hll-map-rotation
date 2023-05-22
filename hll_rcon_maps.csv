@@ -1,5 +1,7 @@
 map,mode,variant,weight,seeding,stress
 carentan_warfare,warfare,day,90,TRUE,
+driel_warfare,warfare,day,0,TRUE,
+elalamein_warfare,warfare,day,0,TRUE,
 foy_warfare,warfare,day,50,,
 foy_warfare_night,warfare,night,50,,
 hill400_warfare,warfare,day,10,,TRUE
@@ -19,6 +21,10 @@ stmereeglise_warfare,warfare,day,90,TRUE,
 utahbeach_warfare,warfare,day,30,TRUE,
 carentan_offensive_ger,offensive,axis,30,,
 carentan_offensive_us,offensive,allies,30,,
+driel_offensive_ger,offensive,axis,0,,
+driel_offensive_us,offensive,allies,0,,
+elalamein_offensive_ger,offensive,axis,0,,
+elalamein_offensive_CW,offensive,allies,0,,
 foy_offensive_ger,offensive,axis,30,,
 foy_offensive_us,offensive,allies,30,,
 hill400_offensive_ger,offensive,axis,30,,TRUE

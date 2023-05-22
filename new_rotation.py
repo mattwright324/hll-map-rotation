@@ -4,6 +4,16 @@ import csv
 import random
 import re
 
+def rindex(lst, value):
+    # reversed is a buitin backward iterator
+    # operator.indexOf can handle this iterator
+    # if value is not Found it raises
+    #    ValueError: sequence.index(x): x not in sequence
+    _ = operator.indexOf(reversed(lst), value)
+    # we must fix the resersed index
+    return len(lst) - _ - 1
+
+
 class Config:
     def __init__(self):
         self.str = ""
@@ -184,41 +194,64 @@ def main(argv):
             
             if exact_dupe_dist == -1 and result in live_rotation:
                 good_result = False
-            if exact_dupe_dist > -1 and result in live_rotation and live_rotation.index(result)-length < exact_dupe_dist:
-                good_result = False
-            
+                if debug: print(result, " is bad [exact dupe dist == -1]")
+            if not good_result: return False
+            if exact_dupe_dist > -1 and result in live_rotation:
+                l = length-exact_dupe_dist
+                if (l < 0): l = 0
+                for j in range(l, length, 1):
+                    if result == live_rotation[j]:
+                        good_result = False
+                if debug and not good_result: print(result, " is bad [exact dupe dist > -1] ", l, length)
+            if not good_result: return False
+
             if general_dupe_dist == -1:
                 for j in range(0, length, 1):
                     if result.split("_")[0] == live_rotation[j].split("_")[0]:
                         good_result = False
+                if debug and not good_result: print(result, " is bad [general dupe dist == -1]")
+            if not good_result: return False
             if general_dupe_dist > -1:
                 l = length-general_dupe_dist
                 if (l < 0): l = 0
                 for j in range(l, length, 1):
                     if result.split("_")[0] == live_rotation[j].split("_")[0]:
                         good_result = False
-            
+                if debug and not good_result: print(result, " is bad [general dupe dist > -1] ", l, length)
+            if not good_result: return False
+
             if stress_dist == -1 and result in stress_maps:
                 good_result = False
+                if debug: print(result, " is bad [stress dist == -1]")
+            if not good_result: return False
             if stress_dist > -1 and result in stress_maps and length > 0:
                 l = length-stress_dist
                 if (l < 0): l = 0
                 for j in range(l, length, 1):
                     if live_rotation[j] in stress_maps:
                         good_result = False
+                if debug and not good_result: print(result, " is bad [stress dist > -1] ", l, length)
+            if not good_result: return False
 
             if nonstress_dist == -1 and result not in stress_maps:
                 good_result = False
+                if debug: print(result, " is bad [nonstress dist == -1]")
+            if not good_result: return False
             if nonstress_dist > -1 and result not in stress_maps and length > 0:
                 l = length-nonstress_dist
                 if (l < 0): l = 0
                 for j in range(l, length, 1):
                     if live_rotation[j] not in stress_maps:
                         good_result = False
-            
+                if debug and not good_result: print(result, " is bad [nonstress dist == -1] ", l, length)
+            if not good_result: return False
+
             return good_result
         
         for config in configs:
+            if debug: print()
+
+            picked = []
             map_options = []
             map_weights = []
             for row in csv_data:
@@ -236,9 +269,9 @@ def main(argv):
                         map_weights.append(float(50))
             amount = random.randint(config.range[0], config.range[1])
             
-            if not exact_dupe_dist == 0:
+            if exact_dupe_dist == -1:
                 amount = min(len(map_options), amount)
-            
+
             if debug:
                 print("Config [",
                       "str=", config.str,
@@ -252,10 +285,10 @@ def main(argv):
                       "]", sep='')
                 print("Map options: ", map_options)
                 print("Map weights: ", map_weights)
-                print()
             
             for i in range(0, amount, 1):
-                while True:
+                if debug: print("Picking", i, "of", amount)
+                while True and len(map_options) > 0:
                     result = random.choices(map_options, weights=map_weights, k=1)[0];
                     good_result = check_good_result(result)
                     
@@ -265,11 +298,20 @@ def main(argv):
                             any_good_results = True
                     
                     if good_result:
+                        if debug: print(result, ' is good')
+                        picked.append(result)
                         live_rotation.append(result)
+
+                        if exact_dupe_dist == -1: 
+                            result_index = map_options.index(result)
+                            del map_options[result_index]
+                            del map_weights[result_index]
                         break
                     if not any_good_results:
                         if debug: print("No more good results possible, stopping early.")
                         break
+            
+            if debug: print("Picked: ", picked)
 
         return live_rotation
     

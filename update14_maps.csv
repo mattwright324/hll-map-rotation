@@ -1,9 +1,7 @@
 map,mode,variant,weight,seeding,stress
 driel_warfare,warfare,day,90,TRUE,
-driel_warfare_night,warfare,night,90,TRUE,
-driel_offensive_ger,offensive,axis,90,TRUE,TRUE
-driel_offensive_brit,offensive,allies,90,TRUE,TRUE
+driel_offensive_ger,offensive,axis,30,,
+driel_offensive_us,offensive,allies,30,,
 elalamein_warfare,warfare,day,90,TRUE,
-elalamein_warfare_night,warfare,night,90,TRUE,
-elalamein_offensive_ger,offensive,axis,90,TRUE,TRUE
-elalamein_offensive_brit,offensive,allies,90,TRUE,TRUE
+elalamein_offensive_ger,offensive,axis,30,,
+elalamein_offensive_CW,offensive,allies,30,,
