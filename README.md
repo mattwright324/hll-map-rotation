@@ -8,6 +8,9 @@ Generate random weighted map rotations for the hll_rcon_tool
 # 9 warfares in a row with default settings with seed rotation
 $ ./new_rotation.py -s -c "9w"
 
+# 9 warfares with extended stress distance printed for the MapRotation.ini file
+$ ./new_rotation.py -c "9w" -r 2 -f "ini"
+
 # all 13 unique maps alternating stress and nonstress
 $ ./new_rotation.py -c "13w" -t 1 -r 1
 
@@ -15,7 +18,7 @@ $ ./new_rotation.py -c "13w" -t 1 -r 1
 $ ./new_rotation.py -c "1w 1o 1w 1o 1w 1o"
 
 # rotation for the new update using only the new maps. tweak dupe and stress options
-$ ./new_rotation.py -c "2w 2og 2w 2ou" -i "update14_maps.csv" -e 1 -g 1 -r 0
+$ ./new_rotation.py -c "1w 1og 1w 1ou 1w 1ou" -i "update14_maps.csv" -e 1 -g 1
 
 # night maps only. most are stress so set stress distance to 0
 $ ./new_rotation.py -r 0 -c "5wn"
@@ -29,6 +32,7 @@ $ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 3ou"
 - `-d` or `--debug` default off. print extra messages to debug
 - `-i "<file>"` or `--input "<file>"` default `hll_rcon_maps.csv`. specify the csv file to pick maps from 
 - `-n` or `--no-weight` default off. generate the list with no weighting
+- `-f "<format>"` or `--format "<format>"` default `autosettings`. accepted values: `autosettings`, `ini`. how to print out the rotation
 - `-e <int>` or `--exact-dupe-dist <int>` default `-1` (disabled). allow/distance of exact duplicates
     - Example: two *carentan_warfare* in the list
 	- Requires at least a `general-dupe-dist` of 0 to work

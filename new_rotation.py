@@ -31,8 +31,7 @@ def readConfig(configStr):
 
     result = re.search(r"((\d+)-?(\d+)?)([awdnogu]+)", configStr)
 
-    config.range = [int((result.group(2) or 0)), int(
-        (result.group(3) or result.group(2) or 0))]
+    config.range = [int((result.group(2) or 0)), int((result.group(3) or result.group(2) or 0))]
     modes = result.group(4).lower()
 
     if "a" in modes:
@@ -72,9 +71,20 @@ def print_json_copy_paste(type, rotation, stress_maps):
     print("]")
     print()
 
+# Outputs 
+# type - live/seed
+# rotation - maps list
+# stress_maps - optional to highlight stress maps in output
+def print_ini_copy_paste(type, rotation, stress_maps):
+    print(" ##### ", type, " (", len(rotation)," maps) ##### ", sep='')
+    print()
+    print("\n".join(rotation), sep='')
+    print()
+
 def main(argv):
     debug = False
 
+    format = "autosettings"
     config_input = "7w 1o"
     exact_dupe_dist = -1
     general_dupe_dist = -1
@@ -84,8 +94,8 @@ def main(argv):
     nonstress_dist = 0
     weighted = True
 
-    opts, args = getopt.getopt(argv, "hdne:g:si:r:t:c:", [
-        "help", "debug", "no-weight", "exact-dupe-dist", "general-dupe-dist", "seed", "input", "stress-dist", "nonstress-dist", "config"
+    opts, args = getopt.getopt(argv, "hdnf:e:g:si:r:t:c:", [
+        "help", "debug", "no-weight", "format=", "exact-dupe-dist=", "general-dupe-dist=", "seed", "input=", "stress-dist=", "nonstress-dist=", "config="
     ])
     for opt, arg in opts:
         if opt in ("-h", "--help"):
@@ -97,6 +107,8 @@ def main(argv):
             input_file = arg
         elif opt in ("-n", "--no-weight"):
             weighted = False
+        elif opt in ("-f", "--format"):
+            format = arg
         elif opt in ("-e", "--exact-dupe-dist"):
             if arg != None and arg.isnumeric():
                 exact_dupe_dist = int(arg)
@@ -118,6 +130,7 @@ def main(argv):
 
     if debug:
         print("config_input=\"", config_input, '"',
+              "  format=\"", format, '"',
               "  exact_dupe_dist=", exact_dupe_dist,
               "  general_dupe_dist=", general_dupe_dist,
               "  stress_dist=", stress_dist,
@@ -317,11 +330,17 @@ def main(argv):
     
     print()
     live_rotation = generate_live_rotation(csv_data)
-    print_json_copy_paste("Live", live_rotation, stress_maps=[])
+    if format == 'ini':
+        print_ini_copy_paste("Live", live_rotation, stress_maps=[])
+    else:
+        print_json_copy_paste("Live", live_rotation, stress_maps=[])
     
     if make_seed_rotation:
         seed_rotation = generate_seed_rotation(live_rotation)
-        print_json_copy_paste("Seed", seed_rotation, stress_maps=[])
+        if format == 'ini':
+            print_ini_copy_paste("Seed", seed_rotation, stress_maps=[])
+        else:
+            print_json_copy_paste("Seed", seed_rotation, stress_maps=[])
 
 
 if __name__ == "__main__":
