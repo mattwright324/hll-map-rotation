@@ -24,12 +24,14 @@ class Config:
         self.offensive = False
         self.axis = False
         self.allies = False
+        self.stress = False
+        self.nonstress = False
 
 def readConfig(configStr):
     config = Config()
     config.str = configStr
 
-    result = re.search(r"((\d+)-?(\d+)?)([awdnogu]+)", configStr)
+    result = re.search(r"((\d+)-?(\d+)?)([awdnogust]+)", configStr)
 
     config.range = [int((result.group(2) or 0)), int((result.group(3) or result.group(2) or 0))]
     modes = result.group(4).lower()
@@ -41,6 +43,8 @@ def readConfig(configStr):
         config.offensive = True
         config.axis = True
         config.allies = True
+        config.stress = True
+        config.nonstress = True
     if "w" in modes:
         config.warfare = True
         if "d" in modes or "n" in modes:
@@ -57,6 +61,13 @@ def readConfig(configStr):
         else:
             config.axis = True
             config.allies = True
+    if "s" in modes or "t" in modes:
+        config.stress = "s" in modes
+        config.nonstress = "t" in modes
+    else:
+        config.stress = True
+        config.nonstress = True
+
     return config
 
 # Outputs 
@@ -269,12 +280,17 @@ def main(argv):
             map_weights = []
             for row in csv_data:
                 append = False
+                append_stress = False
+                if config.stress and str(row["stress"]).upper() == "TRUE":
+                    append_stress = True
+                if config.nonstress and str(row["stress"]).upper() != "TRUE":
+                    append_stress = True
                 if config.warfare and row["mode"] == "warfare" and (config.day and row["variant"] == "day" or config.night and row["variant"] == "night"):
                     append = True
                 if config.offensive and row["mode"] == "offensive" and (config.axis and row["variant"] == "axis" or config.allies and row["variant"] == "allies"):
                     append = True
 
-                if append:
+                if append and append_stress:
                     map_options.append(row["map"])
                     if weighted:
                         map_weights.append(float(row["weight"]))
@@ -295,6 +311,8 @@ def main(argv):
                       " o=", config.offensive,
                       " g=", config.axis,
                       " u=", config.allies,
+                      " s=", config.stress,
+                      " t=", config.nonstress,
                       "]", sep='')
                 print("Map options: ", map_options)
                 print("Map weights: ", map_weights)

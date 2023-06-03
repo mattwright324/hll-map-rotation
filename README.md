@@ -11,6 +11,9 @@ $ ./new_rotation.py -s -c "9w"
 # 9 warfares with extended stress distance printed for the MapRotation.ini file
 $ ./new_rotation.py -c "9w" -r 2 -f "ini"
 
+# 10 warfares with finer stress/nonstress control
+$ ./new_rotation.py -s -c "1ws 3wt 1ws 1wt 1ws 1wt 1ws 1wt" -r 0
+
 # all 13 unique maps alternating stress and nonstress
 $ ./new_rotation.py -c "13w" -t 1 -r 1
 
@@ -53,3 +56,5 @@ $ ./new_rotation.py -r 2 -c "3og 3ou 3og 3ou 3og 3ou"
 	- `o` offensive mode. includes both variants by default
 	    - `g` axis attacking variant
 		- `u` allies attacking variant
+	- `s` stress map
+	- `t` nonstress map
