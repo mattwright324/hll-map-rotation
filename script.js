@@ -35,6 +35,8 @@
         const resultsIniDiv = $("#results-ini");
         const resultsIniPathDiv = $("#results-ini-path");
 
+        const shareLink = $("#shareLink");
+
         function hideAll() {
             resultsPrettyDiv.hide()
             resultsAutoDiv.hide()
@@ -50,6 +52,47 @@
         $("input[type='number']").inputSpinner();
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        new ClipboardJS(".clipboard");
+
+        const queryString = window.location.search;
+        const query = {};
+        const pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+        for (let i = 0; i < pairs.length; i++) {
+            let pair = pairs[i].split('=');
+            query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+        }
+        if (query.hasOwnProperty("config")) {
+            configInput.val(query.config)
+        }
+        if (query.hasOwnProperty("stress")) {
+            inputStressDist.val(query.stress)
+        }
+        if (query.hasOwnProperty("genDupe")) {
+            inputGenDupeDist.val(query.genDupe)
+        }
+        if (query.hasOwnProperty("exactDupe")) {
+            inputExactDupeDist.val(query.exactDupe)
+        }
+
+        function updateShareLink() {
+            const baseUrl = location.origin + location.pathname;
+
+            const params = ["config=" + configInput.val()]
+            if (Number(inputStressDist.val()) !== 1) {
+                params.push("stress=" + inputStressDist.val())
+            }
+            if (Number(inputGenDupeDist.val()) !== -1) {
+                params.push("genDupe=" + inputGenDupeDist.val())
+            }
+            if (Number(inputExactDupeDist.val()) !== -1) {
+                params.push("exactDupe=" + inputExactDupeDist.val())
+            }
+
+            shareLink.val(baseUrl + "?" + params.join("&"))
+        }
+
+        updateShareLink()
 
         // https://stackoverflow.com/a/55671924
         function weighted_random(options) {
@@ -106,6 +149,7 @@
             resultsPrettyDiv.html("")
             resultsAutoDiv.html("")
             resultsIniDiv.html("")
+            updateShareLink()
 
             for (let i = 0; i < csvmaps.length; i++) {
                 const item = csvmaps[i]
