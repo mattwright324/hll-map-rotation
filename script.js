@@ -63,7 +63,7 @@
             query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
         }
         if (query.hasOwnProperty("config")) {
-            configInput.val(query.config)
+            configInput.val(query.config.replaceAll("+", " "))
         }
         if (query.hasOwnProperty("stress")) {
             inputStressDist.val(query.stress)
@@ -74,11 +74,37 @@
         if (query.hasOwnProperty("exactDupe")) {
             inputExactDupeDist.val(query.exactDupe)
         }
+        if (query.hasOwnProperty("settings")) {
+            window.querysettings = {}
+
+            const changed = query.settings.split("||")
+            for (let i = 0; i < changed.length; i++) {
+                const diffs = changed[i].split("|")
+                const map_name = diffs[0];
+                querysettings[map_name] = {}
+                for (let j = 0; j < diffs.length; j++) {
+                    const d = diffs[j];
+                    try {
+                        if (d[0] === "e") {
+                            querysettings[map_name]["seeding"] = Boolean(Number(d[1]))
+                        } else if (d[0] === "s") {
+                            querysettings[map_name]["stress"] = Boolean(Number(d[1]))
+                        } else if (d[0] === "w") {
+                            querysettings[map_name]["weight"] = Number(d.slice(1))
+                        }
+                    } catch (e) {
+                        console.error(e)
+                    }
+                }
+            }
+
+            console.log("querysettings", querysettings)
+        }
 
         function updateShareLink() {
             const baseUrl = location.origin + location.pathname;
 
-            const params = ["config=" + encodeURI(configInput.val())]
+            const params = ["config=" + configInput.val().replaceAll(" ", "+")]
             if (Number(inputStressDist.val()) !== 1) {
                 params.push("stress=" + inputStressDist.val())
             }
@@ -89,10 +115,37 @@
                 params.push("exactDupe=" + inputExactDupeDist.val())
             }
 
+            if (window.hasOwnProperty("csvmaps")) {
+                const diffs = []
+                for (let i = 0; i < csvmaps.length; i++) {
+                    const current = csvmaps[i];
+                    for (let j = 0; j < csvoriginal.length; j++) {
+                        const original = csvoriginal[j];
+                        if (current.map === original.map) {
+                            const d = []
+                            if (Boolean(current.seeding) !== Boolean(original.seeding)) {
+                                d.push("e" + Number(current.seeding))
+                            }
+                            if (Boolean(current.stress) !== Boolean(original.stress)) {
+                                d.push("s" + Number(current.stress))
+                            }
+                            if (current.weight !== original.weight) {
+                                d.push("w" + current.weight)
+                            }
+                            if (d.length) {
+                                console.log(d, current, original)
+                                diffs.push(current.map + "|" + d.join("|"))
+                            }
+                        }
+                    }
+                }
+                if (diffs.length) {
+                    params.push("settings=" + diffs.join("||"))
+                }
+            }
+
             shareLink.val(baseUrl + "?" + params.join("&"))
         }
-
-        updateShareLink()
 
         // https://stackoverflow.com/a/55671924
         function weighted_random(options) {
@@ -149,7 +202,6 @@
             resultsPrettyDiv.html("")
             resultsAutoDiv.html("")
             resultsIniDiv.html("")
-            updateShareLink()
 
             for (let i = 0; i < csvmaps.length; i++) {
                 const item = csvmaps[i]
@@ -160,6 +212,8 @@
             }
 
             console.log("Custom map settings", csvmaps)
+
+            updateShareLink()
 
             const configMatches = [...configInput.val().matchAll(/((\d+)-?(\d+)?)([awdnoguste]+)/gi)]
             const configs = []
@@ -270,7 +324,6 @@
                         }
                     }
 
-
                     return true
                 }
 
@@ -365,7 +418,27 @@
             complete: function (results, file) {
                 console.log("Parsing complete:", results, file);
 
+                window.csvoriginal = JSON.parse(JSON.stringify(results.data));
                 window.csvmaps = results.data;
+
+                if (window.hasOwnProperty("querysettings")) {
+                    console.log("Applying querysettings")
+                    for (let i = 0; i < csvmaps.length; i++) {
+                        const item = csvmaps[i];
+                        if (querysettings.hasOwnProperty(item.map)) {
+                            const overwrite = querysettings[item.map];
+                            if (overwrite.hasOwnProperty("seeding")) {
+                                item.seeding = overwrite.seeding
+                            }
+                            if (overwrite.hasOwnProperty("stress")) {
+                                item.stress = overwrite.stress
+                            }
+                            if (overwrite.hasOwnProperty("weight")) {
+                                item.weight = overwrite.weight
+                            }
+                        }
+                    }
+                }
 
                 const rows = []
                 for (let i = 0; i < results.data.length; i++) {
