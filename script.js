@@ -78,7 +78,7 @@
         function updateShareLink() {
             const baseUrl = location.origin + location.pathname;
 
-            const params = ["config=" + configInput.val()]
+            const params = ["config=" + encodeURI(configInput.val())]
             if (Number(inputStressDist.val()) !== 1) {
                 params.push("stress=" + inputStressDist.val())
             }
