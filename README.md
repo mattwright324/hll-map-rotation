@@ -11,8 +11,8 @@ $ ./new_rotation.py -s -c "9w"
 # 9 warfares with extended stress distance printed for the MapRotation.ini file
 $ ./new_rotation.py -c "9w" -r 2 -f "ini"
 
-# 10 warfares with finer stress/nonstress control
-$ ./new_rotation.py -s -c "1ws 3wt 1ws 1wt 1ws 1wt 1ws 1wt" -r 0
+# 9 warfares with finer stress/nonstress control
+$ ./new_rotation.py -s -c "1ws 4wt 1ws 1wt 1ws 1wt" -r 0
 
 # all 13 unique maps alternating stress and nonstress
 $ ./new_rotation.py -c "13w" -t 1 -r 1

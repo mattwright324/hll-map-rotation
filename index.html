@@ -1,0 +1,183 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description"
+          content="Calculate total supplies, needed engineers/people, supply truck runs, and appoximate driving time to build up a strongpoint.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="build" content="{{ site.time | date_to_xmlschema }}">
+    <title>HLL Map Rotation Generator</title>
+    <link rel="icon" href="./icon.png">
+    <link rel="preconnect" href="//cdn.jsdelivr.net" crossorigin>
+
+    <!-- Dependencies -->
+    <link href="//cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-nightshade.min.css" rel="stylesheet">
+    <link href="//cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="//cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js" type="text/javascript"></script>
+    <script src="//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            type="text/javascript"></script>
+    <script src="//cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/js/darkmode.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/bootstrap-input-spinner@3.3.2/src/bootstrap-input-spinner.min.js"
+            type="text/javascript"></script>
+    <script src="//cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js" type="text/javascript"></script>
+    <script src="./papaparse.min.js"></script>
+    <link href="//cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.js"></script>
+
+    <!-- Apps -->
+    <link href="./styles.css?v={{ site.time | date_to_xmlschema }}" rel="stylesheet"/>
+    <script src="./script.js?v={{ site.time | date_to_xmlschema }}" type="text/javascript"></script>
+
+    <!-- Analytics -->
+    <script defer data-domain="mattw.io" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light mb-3" style="border-bottom: 1px solid rgba(127,127,127,0.1);">
+    <span class="container">
+        <div class="navbar-brand">
+            <img src="./icon.png" alt="" class="d-inline-block align-text-top"><span style="padding-left: .75rem;">HLL Map Rotation Generator</span>
+        </div>
+        <form class="d-flex">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="darkMode" checked>
+                <label class="form-check-label" for="darkMode">Dark</label>
+            </div>
+            <script>
+                const switchDarkMode = document.querySelector("#darkMode");
+                switchDarkMode.onclick = function (e) {
+                    darkmode.toggleDarkMode();
+                }
+                window.addEventListener('DOMContentLoaded', () => {
+                    if (DarkMode.getColorScheme() === "dark") {
+                        console.log(1)
+                        switchDarkMode.setAttribute("checked", "checked");
+                    } else {
+                        console.log(2)
+                        switchDarkMode.removeAttribute("checked");
+                    }
+                });
+            </script>
+        </form>
+    </span>
+</nav>
+
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mb-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="configInput" class="form-label"><strong>Rotation Config</strong></label>
+                        <input type="text" class="form-control" id="configInput" placeholder="4we 1ws 1wt 1as 1wt 1as"
+                               value="4we 1ws 1wt 1as 1wt 1as">
+                        <div class="form-text">
+                            Short form way to express what kind of maps and what order to generate in.
+                            A number or number range followed by map type and variant.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-text">
+                            <span class="badge config rounded-pill bg-primary">#</span> static amount
+                            <span class="badge config rounded-pill bg-secondary">#-#</span> range amount
+                            <br>
+                            <span class="badge config rounded-pill bg-primary">a</span> all modes variants
+                            <br>
+                            <span class="badge config rounded-pill bg-primary">w</span> warfare
+                            <span class="badge config rounded-pill bg-secondary">d</span> day
+                            <span class="badge config rounded-pill bg-secondary">n</span> night
+                            <br>
+                            <span class="badge config rounded-pill bg-primary">o</span> offensive
+                            <span class="badge config rounded-pill bg-secondary">g</span> axis
+                            <span class="badge config rounded-pill bg-secondary">u</span> allies
+                            <br>
+                            <span class="badge config rounded-pill bg-secondary">s</span> stress
+                            <span class="badge config rounded-pill bg-secondary">t</span> non-stress
+                            <span class="badge config rounded-pill bg-secondary">e</span> seeding
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-md-3" hidden>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="checkUseWeight" checked>
+                        <label class="form-check-label" for="checkUseWeight">
+                            Use map weights
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="checkSeed">
+                        <label class="form-check-label" for="checkSeed">
+                            Generate seed rotation
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3 col-md-3">
+                    <label class="form-label">Stress Distance</label>
+                    <input id="min-stress" value="1" min="-1" max="24" step="1" type="number" autocomplete="off">
+                    <div class="form-text">
+                        Non-stress maps between stressful maps
+                        <br>
+                        e.g. remagen and kursk
+                    </div>
+                </div>
+                <div class="mb-3 col-md-3">
+                    <label class="form-label">Gen Dupe Distance</label>
+                    <input id="min-gen-dupe" value="-1" min="-1" max="24" step="1" type="number" autocomplete="off">
+                    <div class="form-text">
+                        Space between general dupes
+                        <br>
+                        e.g. foy and foy night
+                    </div>
+                </div>
+                <div class="mb-3 col-md-3">
+                    <label class="form-label">Exact Dupe Distance</label>
+                    <input id="min-exact-dupe" value="-1" min="-1" max="24" step="1" type="number" autocomplete="off">
+                    <div class="form-text">
+                        Space between exact dupes
+                        <br>
+                        e.g. foy_warfare and foy_warfare
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h5>Map Settings</h5>
+
+            <div style="max-height:300px;overflow-y:scroll;overflow-x:hidden;border-radius: 15px;padding: 10px;border:1px solid dimgray;">
+                <table id="map-weights" class="table table-striped" style="width:100%;"></table>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button id="generate" class="btn btn-outline-primary" style="width: 100%" disabled="disabled">Generate</button>
+</div>
+<div class="container">
+    <h4>Results</h4>
+
+    <div class="btn-group" role="group" aria-label="Results view format" style="margin-bottom: 1em">
+        <input type="radio" class="btn-check" name="btnradio" id="radioPretty" autocomplete="off" checked>
+        <label class="btn btn-outline-secondary" for="radioPretty">crcon pretty</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="radioAuto" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="radioAuto">crcon auto_settings</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="radioIni" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="radioIni">settings ini</label>
+    </div>
+
+    <div id="results-pretty"></div>
+    <div id="results-autosettings" style="display:none"></div>
+    <div id="results-ini" style="display:none"></div>
+</div>
+
+<div class="ui container" style="padding-top:3%;padding-bottom:3%;color:darkgray;text-align:center">
+    mattwright324 | 2023 | <a href="/">home</a> | <a target="_blank" href="https://github.com/mattwright324">github</a>
+    | <a target="_blank" href="https://github.com/mattwright324/hll_map_rotation">hll_map_rotation</a>
+</div>
+</body>
+</html>
