@@ -44,10 +44,10 @@
             resultsIniPathDiv.hide()
         }
 
-        radioPretty.click(function () {hideAll(); resultsPrettyDiv.show()})
-        radioAuto.click(function () {hideAll(); resultsAutoDiv.show()})
-        radioIni.click(function () {hideAll(); resultsIniDiv.show()})
-        radioIniPath.click(function () {hideAll(); resultsIniPathDiv.show()})
+        radioPretty.click(function () {hideAll(); resultsPrettyDiv.show(); updateShareLink()})
+        radioAuto.click(function () {hideAll(); resultsAutoDiv.show(); updateShareLink()})
+        radioIni.click(function () {hideAll(); resultsIniDiv.show(); updateShareLink()})
+        radioIniPath.click(function () {hideAll(); resultsIniPathDiv.show(); updateShareLink()})
 
         $("input[type='number']").inputSpinner();
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -64,6 +64,13 @@
         }
         if (query.hasOwnProperty("config")) {
             configInput.val(query.config.replaceAll("+", " "))
+        }
+        if (query.hasOwnProperty("view")) {
+            const view = query.view.toLowerCase();
+            if (view === "pretty") {radioPretty.click()}
+            else if (view === "auto") {radioAuto.click()}
+            else if (view === "ini") {radioIni.click()}
+            else if (view === "ini_path") {radioIniPath.click()}
         }
         if (query.hasOwnProperty("stress")) {
             inputStressDist.val(query.stress)
@@ -102,23 +109,35 @@
         }
 
         function updateShareLink() {
+            if (!window.hasOwnProperty("submitted")) {
+                return
+            }
+
             const baseUrl = location.origin + location.pathname;
 
             const params = ["config=" + configInput.val().replaceAll(" ", "+")]
-            if (Number(inputStressDist.val()) !== 1) {
-                params.push("stress=" + inputStressDist.val())
+            if (!radioPretty.is(":checked")) {
+                let view = "pretty"
+                if (radioAuto.is(":checked")) {view = "auto"}
+                else if (radioIni.is(":checked")) {view = "ini"}
+                else if (radioIniPath.is(":checked")) {view = "ini_path"}
+
+                params.push("view=" + view)
             }
-            if (Number(inputGenDupeDist.val()) !== -1) {
-                params.push("genDupe=" + inputGenDupeDist.val())
+            if (Number(submitted.stress) !== 1) {
+                params.push("stress=" + submitted.stress)
             }
-            if (Number(inputExactDupeDist.val()) !== -1) {
-                params.push("exactDupe=" + inputExactDupeDist.val())
+            if (Number(submitted.genDupe) !== -1) {
+                params.push("genDupe=" + submitted.genDupe)
+            }
+            if (Number(submitted.exactDupe) !== -1) {
+                params.push("exactDupe=" + submitted.exactDupe)
             }
 
-            if (window.hasOwnProperty("csvmaps")) {
+            if (window.submitted.settings) {
                 const diffs = []
-                for (let i = 0; i < csvmaps.length; i++) {
-                    const current = csvmaps[i];
+                for (let i = 0; i < window.submitted.settings.length; i++) {
+                    const current = window.submitted.settings[i];
                     for (let j = 0; j < csvoriginal.length; j++) {
                         const original = csvoriginal[j];
                         if (current.map === original.map) {
@@ -212,6 +231,14 @@
             }
 
             console.log("Custom map settings", csvmaps)
+
+            window.submitted = {
+                config: configInput.val(),
+                stress: inputStressDist.val(),
+                genDupe: inputGenDupeDist.val(),
+                exactDupe: inputExactDupeDist.val(),
+                settings: JSON.parse(JSON.stringify(csvmaps))
+            }
 
             updateShareLink()
 
