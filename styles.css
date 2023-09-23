@@ -341,3 +341,9 @@ html.dark .btn-outline-primary {
     position: relative;
     left: -10px;
 }
+
+pre {
+    padding: 8px 20px;
+    border-left: 1px cornflowerblue solid;
+    font-family: monospace;
+}

@@ -29,25 +29,23 @@
         const radioPretty = $("#radioPretty");
         const radioAuto = $("#radioAuto");
         const radioIni = $("#radioIni");
+        const radioIniPath = $("#radioIniPath");
         const resultsPrettyDiv = $("#results-pretty");
         const resultsAutoDiv = $("#results-autosettings");
         const resultsIniDiv = $("#results-ini");
+        const resultsIniPathDiv = $("#results-ini-path");
 
-        radioPretty.click(function () {
-            resultsPrettyDiv.show()
-            resultsAutoDiv.hide()
-            resultsIniDiv.hide()
-        })
-        radioAuto.click(function () {
-            resultsPrettyDiv.hide()
-            resultsAutoDiv.show()
-            resultsIniDiv.hide()
-        })
-        radioIni.click(function () {
+        function hideAll() {
             resultsPrettyDiv.hide()
             resultsAutoDiv.hide()
-            resultsIniDiv.show()
-        })
+            resultsIniDiv.hide()
+            resultsIniPathDiv.hide()
+        }
+
+        radioPretty.click(function () {hideAll(); resultsPrettyDiv.show()})
+        radioAuto.click(function () {hideAll(); resultsAutoDiv.show()})
+        radioIni.click(function () {hideAll(); resultsIniDiv.show()})
+        radioIniPath.click(function () {hideAll(); resultsIniPathDiv.show()})
 
         $("input[type='number']").inputSpinner();
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -95,7 +93,6 @@
                 if (config.seeding === null) append_seed = true
                 if (config.seeding === true && map.seeding) append_seed = true
 
-                console.log(config, map, append, append_stress, append_seed)
                 if (append && append_stress && append_seed) {
                     options.push(map)
                 }
@@ -234,7 +231,7 @@
                 }
 
                 for (let j = 0; j < amount; j++) {
-                    while (true && options.length > 0) {
+                    while (options.length > 0) {
                         let good_options = []
                         for (let k = 0; k < options.length; k++) {
                             if (check_good_result(options[k])) {
@@ -253,6 +250,32 @@
                             break
                         }
                     }
+                }
+            }
+
+            const seed_rotation = []
+            let seed_temp = []
+            for (let i = 0; i < csvmaps.length; i++) {
+                if (csvmaps[i].seeding) {
+                    seed_temp.push(csvmaps[i])
+                    seed_rotation.push("")
+                }
+            }
+            // Match index
+            for (let i = 0; i < seed_temp.length; i++) {
+                if (i > rotation.length) break
+                if (rotation[i].seeding) {
+                    seed_rotation[i] = rotation[i]
+                }
+            }
+            console.log(seed_temp)
+            seed_temp = seed_temp.filter(e => seed_rotation.indexOf(e) === -1)
+            console.log(seed_temp)
+            console.log(seed_rotation)
+            // Fill in blanks
+            for (let i = 0; i < seed_rotation.length; i++) {
+                if (!seed_rotation[i]) {
+                    seed_rotation[i] = seed_temp.pop()
                 }
             }
 
@@ -276,10 +299,16 @@
                     </div>`)
             }
 
+            const seed_names = []
+            for (let i = 0; i < seed_rotation.length; i++) {
+                seed_names.push(seed_rotation[i].map)
+            }
+
             const autoJson = JSON.stringify({"rotation": map_names}, null, 4);
-            const autoSeedJson = JSON.stringify({"rotation": map_names}, null, 4);
+            const autoSeedJson = JSON.stringify({"rotation": seed_names}, null, 4);
             resultsAutoDiv.html(`<pre><code>Live rotation:\n${autoJson}\n\nSeeding rotation:\n${autoSeedJson}</code></pre>`)
             resultsIniDiv.html(`<pre><code>${map_names.join("<br>")}</code></pre>`)
+            resultsIniPathDiv.html(`<pre><code>/Game/Maps/${map_names.join("<br>/Game/Maps/")}</code></pre>`)
 
             btnGenerate.prop("disabled", false)
         })
@@ -327,6 +356,69 @@
                 btnGenerate.click()
             }
         })
+
+        const autoRemoveMapsRule = {
+            "commands": {
+                "do_remove_maps_from_rotation": {
+                    "maps": [
+                        "elalamein_warfare",
+                        "foy_warfare",
+                        "foy_warfare_night",
+                        "hill400_warfare",
+                        "hurtgenforest_warfare_V2",
+                        "hurtgenforest_warfare_V2_night",
+                        "kharkov_warfare",
+                        "kursk_warfare",
+                        "kursk_warfare_night",
+                        "purpleheartlane_warfare",
+                        "purpleheartlane_warfare_night",
+                        "remagen_warfare",
+                        "remagen_warfare_night",
+                        "stalingrad_warfare",
+                        "carentan_offensive_ger",
+                        "carentan_offensive_us",
+                        "driel_offensive_ger",
+                        "driel_offensive_us",
+                        "elalamein_offensive_ger",
+                        "elalamein_offensive_CW",
+                        "foy_offensive_ger",
+                        "foy_offensive_us",
+                        "hill400_offensive_ger",
+                        "hill400_offensive_US",
+                        "hurtgenforest_offensive_ger",
+                        "hurtgenforest_offensive_US",
+                        "kharkov_offensive_ger",
+                        "kharkov_offensive_rus",
+                        "kursk_offensive_ger",
+                        "kursk_offensive_rus",
+                        "omahabeach_offensive_ger",
+                        "omahabeach_offensive_us",
+                        "purpleheartlane_offensive_ger",
+                        "purpleheartlane_offensive_us",
+                        "remagen_offensive_ger",
+                        "remagen_offensive_us",
+                        "stalingrad_offensive_ger",
+                        "stalingrad_offensive_rus",
+                        "stmariedumont_off_ger",
+                        "stmariedumont_off_us",
+                        "stmereeglise_offensive_ger",
+                        "stmereeglise_offensive_us",
+                        "utahbeach_offensive_ger",
+                        "utahbeach_offensive_us"
+                    ]
+                }
+            },
+            "conditions": {
+                "time_of_day": {
+                    "max": "23:00",
+                    "min": "6:00",
+                    "not": true,
+                    "timezone": "America/New_York"
+                }
+            }
+        }
+
+        $("#auto-removebadmaps").html(JSON.stringify(autoRemoveMapsRule, null, 4))
 
     })
 }());

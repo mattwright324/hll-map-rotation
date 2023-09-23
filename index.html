@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description"
-          content="Calculate total supplies, needed engineers/people, supply truck runs, and appoximate driving time to build up a strongpoint.">
+          content="Generate weighted map rotations with fancy configuration and a text expression. Generates in fancy, autosetings, and ini formats.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="build" content="{{ site.time | date_to_xmlschema }}">
     <title>HLL Map Rotation Generator</title>
@@ -65,7 +65,7 @@
     </span>
 </nav>
 
-<div class="container mb-3">
+<div class="container mb-5">
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
@@ -156,7 +156,7 @@
     <br>
     <button id="generate" class="btn btn-outline-primary" style="width: 100%" disabled="disabled">Generate</button>
 </div>
-<div class="container">
+<div class="container mb-5">
     <h4>Results</h4>
 
     <div class="btn-group" role="group" aria-label="Results view format" style="margin-bottom: 1em">
@@ -168,11 +168,28 @@
 
         <input type="radio" class="btn-check" name="btnradio" id="radioIni" autocomplete="off">
         <label class="btn btn-outline-secondary" for="radioIni">settings ini</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="radioIniPath" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="radioIniPath">settings ini (path)</label>
     </div>
 
     <div id="results-pretty"></div>
     <div id="results-autosettings" style="display:none"></div>
     <div id="results-ini" style="display:none"></div>
+    <div id="results-ini-path" style="display:none"></div>
+</div>
+
+<div class="container mb-3">
+    <h4>Recommended</h4>
+    <p>
+        If you are using the CRCON, I recommend using this autosettings rule to remove all
+        offensive and stressful maps from the rotation after a certain time.
+        You may have to adjust the time_of_day and timezone depending on your region.
+    </p>
+    <a class="btn btn-link mb-3" data-bs-toggle="collapse" href="#collapseAutoRemove" role="button" aria-expanded="false" aria-controls="collapseAutoRemove">
+        Toggle code block
+    </a>
+    <pre class="collapse" id="collapseAutoRemove"><code id="auto-removebadmaps"></code></pre>
 </div>
 
 <div class="ui container" style="padding-top:3%;padding-bottom:3%;color:darkgray;text-align:center">
