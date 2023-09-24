@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="description"
-          content="Generate weighted map rotations with fancy configuration and a text expression. Generates in fancy, autosetings, and ini formats.">
+          content="Generate weighted map rotations with fancy configuration and a text expression. Generates in crcon pretty, autosettings, and ini formats.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="build" content="{{ site.time | date_to_xmlschema }}">
     <title>HLL Map Rotation Generator</title>
@@ -167,10 +167,10 @@
         <label class="btn btn-outline-secondary" for="radioAuto">crcon auto_settings</label>
 
         <input type="radio" class="btn-check" name="btnradio" id="radioIni" autocomplete="off">
-        <label class="btn btn-outline-secondary" for="radioIni">settings ini</label>
+        <label class="btn btn-outline-secondary" for="radioIni">maprotation.ini</label>
 
         <input type="radio" class="btn-check" name="btnradio" id="radioIniPath" autocomplete="off">
-        <label class="btn btn-outline-secondary" for="radioIniPath">settings ini (path)</label>
+        <label class="btn btn-outline-secondary" for="radioIniPath">maprotation.ini (path)</label>
     </div>
 
     <div id="results-pretty"></div>
@@ -182,7 +182,7 @@
 <div class="container mb-5">
     <h4>Share</h4>
     <p>
-        Shares rotation config, changed distance values, and changed values in the settings table.
+        Shares rotation config, changed distance values, changed values in the settings table, and currently selected result view.
     </p>
     <div class="input-group" style="max-width: 226px;">
         <input type="text" class="form-control" aria-describedby="copy" id="shareLink" autocomplete="off">
@@ -208,7 +208,13 @@
     <p>Additional resources</p>
     <ul>
         <li><a target="_blank" href="https://github.com/MarechJ/hll_rcon_tool">
-            CRCON - https://github.com/MarechJ/hll_rcon_tool
+            https://github.com/MarechJ/hll_rcon_tool
+        </a></li>
+        <li><a target="_blank" href="https://github.com/cemathey/hll_server_status">
+            https://github.com/cemathey/hll_server_status
+        </a></li>
+        <li><a target="_blank" href="https://gist.github.com/timraay/5634d85eab552b5dfafb9fd61273dc52#available-maps">
+            https://gist.github.com/timraay/5634d85eab552b5dfafb9fd61273dc52#available-maps
         </a></li>
     </ul>
 </div>
