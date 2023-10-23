@@ -1,0 +1,16 @@
+map,mode,variant,weight,seeding,stress
+carentan_warfare_night,warfare,night,90,TRUE,
+driel_warfare_night,warfare,day,30,,
+elalamein_warfare_night,warfare,night,15,,TRUE
+foy_warfare_night,warfare,night,50,,
+hill400_warfare_night,warfare,night,10,,TRUE
+hurtgenforest_warfare_V2_night,warfare,night,50,,TRUE
+kharkov_warfare_night,warfare,night,70,,
+kursk_warfare_night,warfare,night,30,,TRUE
+omahabeach_warfare_night,warfare,night,50,TRUE,
+purpleheartlane_warfare_night,warfare,night,30,,TRUE
+remagen_warfare_night,warfare,night,10,,TRUE
+stalingrad_warfare_night,warfare,night,50,,TRUE
+stmariedumont_warfare_night,warfare,night,90,TRUE,
+stmereeglise_warfare_night,warfare,night,90,TRUE,
+utahbeach_warfare_night,warfare,night,30,TRUE,

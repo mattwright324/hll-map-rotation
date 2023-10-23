@@ -1,5 +1,6 @@
 map,mode,variant,weight,seeding,stress
 carentan_warfare,warfare,day,90,TRUE,
+carentan_warfare_night,warfare,night,90,TRUE,
 driel_warfare,warfare,day,30,,
 elalamein_warfare,warfare,day,5,,TRUE
 foy_warfare,warfare,day,50,,
@@ -18,6 +19,7 @@ remagen_warfare_night,warfare,night,10,,TRUE
 stalingrad_warfare,warfare,day,50,,TRUE
 stmariedumont_warfare,warfare,day,90,TRUE,
 stmereeglise_warfare,warfare,day,90,TRUE,
+stmereeglise_warfare_night,warfare,night,90,TRUE,
 utahbeach_warfare,warfare,day,30,TRUE,
 carentan_offensive_ger,offensive,axis,50,,TRUE
 carentan_offensive_us,offensive,allies,50,,TRUE
