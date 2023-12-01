@@ -2,7 +2,9 @@ map,mode,variant,weight,seeding,stress
 carentan_warfare,warfare,day,90,TRUE,
 carentan_warfare_night,warfare,night,90,TRUE,
 driel_warfare,warfare,day,30,,
+driel_warfare_night,warfare,night,30,,
 elalamein_warfare,warfare,day,5,,TRUE
+elalamein_warfare_night,warfare,night,15,,TRUE
 foy_warfare,warfare,day,50,,
 foy_warfare_night,warfare,night,50,,
 hill400_warfare,warfare,day,10,,TRUE
