@@ -11,6 +11,7 @@ hill400_warfare,warfare,day,10,,TRUE
 hurtgenforest_warfare_V2,warfare,day,50,,TRUE
 hurtgenforest_warfare_V2_night,warfare,night,50,,TRUE
 kharkov_warfare,warfare,day,70,,
+kharkov_warfare_night,warfare,night,70,,
 kursk_warfare,warfare,day,30,,TRUE
 kursk_warfare_night,warfare,night,30,,TRUE
 omahabeach_warfare,warfare,day,50,TRUE,
@@ -19,6 +20,7 @@ purpleheartlane_warfare_night,warfare,night,30,,TRUE
 remagen_warfare,warfare,day,10,,TRUE
 remagen_warfare_night,warfare,night,10,,TRUE
 stalingrad_warfare,warfare,day,50,,TRUE
+stalingrad_warfare_night,warfare,night,50,,TRUE
 stmariedumont_warfare,warfare,day,90,TRUE,
 stmereeglise_warfare,warfare,day,90,TRUE,
 stmereeglise_warfare_night,warfare,night,90,TRUE,
