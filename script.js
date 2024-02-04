@@ -428,9 +428,27 @@
                 seed_names.push(seed_rotation[i].map)
             }
 
-            const autoJson = JSON.stringify({"rotation": map_names}, null, 4);
-            const autoSeedJson = JSON.stringify({"rotation": seed_names}, null, 4);
-            resultsAutoDiv.html(`<pre><code>Live rotation:\n${autoJson}\n\nSeeding rotation:\n${autoSeedJson}</code></pre>`)
+            // const autoJson = JSON.stringify({"rotation": map_names}, null, 4);
+            // const autoSeedJson = JSON.stringify({"rotation": seed_names}, null, 4);
+            const exampleAutoSettings = JSON.stringify({
+                "defaults": {
+                    "set_maprotation": map_names,
+                },
+                "rules": [
+                    {
+                        "commands": {
+                            "set_maprotation": seed_names.slice(0,5),
+                            "conditions": {
+                                "player_count": {
+                                    "max": 39,
+                                    "min": 0
+                                }
+                            }
+                        }
+                    }
+                ]
+            }, null, 4);
+            resultsAutoDiv.html(`<pre><code>Minimal autosettings example:\n\n${exampleAutoSettings}</code></pre>`)
             resultsIniDiv.html(`<pre><code>${map_names.join("<br>")}</code></pre>`)
             resultsIniPathDiv.html(`<pre><code>/Game/Maps/${map_names.join("<br>/Game/Maps/")}</code></pre>`)
 
