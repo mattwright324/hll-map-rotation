@@ -163,7 +163,8 @@
                 }
             }
 
-            shareLink.val(baseUrl + "?" + params.join("&"))
+            shareLink.val(baseUrl + "?" + params.join("&"));
+            refreshMapRemoveRule();
         }
 
         // https://stackoverflow.com/a/55671924
@@ -432,12 +433,16 @@
             // const autoSeedJson = JSON.stringify({"rotation": seed_names}, null, 4);
             const exampleAutoSettings = JSON.stringify({
                 "defaults": {
-                    "set_maprotation": map_names,
+                    "set_maprotation": {
+                        "rotation": map_names
+                    },
                 },
                 "rules": [
                     {
                         "commands": {
-                            "set_maprotation": seed_names.slice(0,5),
+                            "set_maprotation": {
+                                "rotation": seed_names.slice(0,5)
+                            },
                             "conditions": {
                                 "player_count": {
                                     "max": 39,
@@ -454,6 +459,37 @@
 
             btnGenerate.prop("disabled", false)
         })
+
+        function refreshMapRemoveRule() {
+            const not_seed_maps = []
+            if (window?.submitted?.settings) {
+                for (let i = 0; i < window.submitted.settings.length; i++) {
+                    const current = window.submitted.settings[i];
+                    if (!current.seeding) {
+                        not_seed_maps.push(current.map)
+                    }
+                }
+            }
+
+            const autoRemoveMapsRule = {
+                "commands": {
+                    "do_remove_maps_from_rotation": {
+                        "maps": not_seed_maps
+                    }
+                },
+                "conditions": {
+                    "time_of_day": {
+                        "max": "23:00",
+                        "min": "6:00",
+                        "not": true,
+                        "timezone": "America/New_York"
+                    }
+                }
+            }
+
+            $("#auto-removebadmaps").html(JSON.stringify(autoRemoveMapsRule, null, 4))
+        }
+        refreshMapRemoveRule()
 
         Papa.parse("./hll_rcon_maps.csv", {
             download: true,
@@ -516,71 +552,9 @@
 
                 btnGenerate.prop("disabled", false)
                 btnGenerate.click()
+
+                refreshMapRemoveRule()
             }
-        })
-
-        const autoRemoveMapsRule = {
-            "commands": {
-                "do_remove_maps_from_rotation": {
-                    "maps": [
-                        "elalamein_warfare",
-                        "foy_warfare",
-                        "foy_warfare_night",
-                        "hill400_warfare",
-                        "hurtgenforest_warfare_V2",
-                        "hurtgenforest_warfare_V2_night",
-                        "kharkov_warfare",
-                        "kursk_warfare",
-                        "kursk_warfare_night",
-                        "purpleheartlane_warfare",
-                        "purpleheartlane_warfare_night",
-                        "remagen_warfare",
-                        "remagen_warfare_night",
-                        "stalingrad_warfare",
-                        "carentan_offensive_ger",
-                        "carentan_offensive_us",
-                        "driel_offensive_ger",
-                        "driel_offensive_us",
-                        "elalamein_offensive_ger",
-                        "elalamein_offensive_CW",
-                        "foy_offensive_ger",
-                        "foy_offensive_us",
-                        "hill400_offensive_ger",
-                        "hill400_offensive_US",
-                        "hurtgenforest_offensive_ger",
-                        "hurtgenforest_offensive_US",
-                        "kharkov_offensive_ger",
-                        "kharkov_offensive_rus",
-                        "kursk_offensive_ger",
-                        "kursk_offensive_rus",
-                        "omahabeach_offensive_ger",
-                        "omahabeach_offensive_us",
-                        "purpleheartlane_offensive_ger",
-                        "purpleheartlane_offensive_us",
-                        "remagen_offensive_ger",
-                        "remagen_offensive_us",
-                        "stalingrad_offensive_ger",
-                        "stalingrad_offensive_rus",
-                        "stmariedumont_off_ger",
-                        "stmariedumont_off_us",
-                        "stmereeglise_offensive_ger",
-                        "stmereeglise_offensive_us",
-                        "utahbeach_offensive_ger",
-                        "utahbeach_offensive_us"
-                    ]
-                }
-            },
-            "conditions": {
-                "time_of_day": {
-                    "max": "23:00",
-                    "min": "6:00",
-                    "not": true,
-                    "timezone": "America/New_York"
-                }
-            }
-        }
-
-        $("#auto-removebadmaps").html(JSON.stringify(autoRemoveMapsRule, null, 4))
-
+        });
     })
 }());
